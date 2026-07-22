@@ -16,6 +16,8 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
+      imagePullSecrets:
+        - name: gitlab-registry
       containers:
         - name: api
           image: warehouse-routing:latest
