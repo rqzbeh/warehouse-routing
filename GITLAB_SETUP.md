@@ -49,6 +49,22 @@ The repo-side agent config is:
 .gitlab/agents/warehouse-routing/config.yaml
 ```
 
+It grants two kinds of access:
+
+```yaml
+ci_access:
+  projects:
+    - id: rqzbeh/warehouse-routing
+
+user_access:
+  access_as:
+    agent: {}
+  projects:
+    - id: rqzbeh/warehouse-routing
+```
+
+`ci_access` lets GitLab CI jobs use the agent context. `user_access` lets project users access the cluster through GitLab. This project uses `access_as: agent`, which works on the Free tier. `access_as: user` is for Premium and higher.
+
 Register an agent named:
 
 ```text

@@ -1,3 +1,9 @@
 ci_access:
   projects:
     - id: rqzbeh/warehouse-routing
+
+user_access:
+  access_as:
+    agent: {}
+  projects:
+    - id: rqzbeh/warehouse-routing
