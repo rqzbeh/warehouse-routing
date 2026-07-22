@@ -1,0 +1,178 @@
+openapi: 3.1.0
+info:
+  title: Warehouse Routing Service
+  version: 1.0.0
+paths:
+  /healthz:
+    get:
+      summary: Process health check
+      responses:
+        "204":
+          description: Process is alive
+  /readyz:
+    get:
+      summary: Database readiness check
+      responses:
+        "204":
+          description: Service is ready
+        "503":
+          description: Database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /route:
+    post:
+      summary: Select a warehouse and reserve inventory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RouteRequest"
+            examples:
+              default:
+                value:
+                  customer_location:
+                    lat: 35.7219
+                    lon: 51.3347
+                  sku: SKU-1
+                  quantity: 1
+                  requested_at: "2026-07-22T12:00:00Z"
+                  expected_delivery_time: 60
+                  transportation_costs:
+                    - warehouse_id: tehran-west
+                      cost: 100000
+                      eta_minutes: 45
+                    - warehouse_id: tehran-east
+                      cost: 85000
+                      eta_minutes: 70
+                    - warehouse_id: karaj
+                      cost: 70000
+                      eta_minutes: 95
+                  logistics_constraints:
+                    - warehouse_id: tehran-west
+                      traffic_coefficient: 1.2
+                      fleet_priority_factor: 1.1
+                      start_time: "2026-07-22T11:00:00Z"
+                      end_time: "2026-07-22T13:00:00Z"
+      responses:
+        "200":
+          description: Selected warehouse
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteDecision"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: No warehouse has enough inventory
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Inventory changed before reservation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Location:
+      type: object
+      required: [lat, lon]
+      properties:
+        lat:
+          type: number
+          minimum: -90
+          maximum: 90
+        lon:
+          type: number
+          minimum: -180
+          maximum: 180
+    TransportationCost:
+      type: object
+      required: [warehouse_id, cost, eta_minutes]
+      properties:
+        warehouse_id:
+          type: string
+          minLength: 1
+        cost:
+          type: number
+          minimum: 0
+        eta_minutes:
+          type: integer
+          minimum: 1
+    LogisticsConstraint:
+      type: object
+      required: [warehouse_id]
+      properties:
+        warehouse_id:
+          type: string
+          minLength: 1
+        traffic_coefficient:
+          type: number
+          minimum: 0
+          default: 1
+        fleet_priority_factor:
+          type: number
+          minimum: 0
+          default: 1
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+    RouteRequest:
+      type: object
+      required: [customer_location, sku, quantity, transportation_costs]
+      properties:
+        customer_location:
+          $ref: "#/components/schemas/Location"
+        sku:
+          type: string
+          minLength: 1
+        quantity:
+          type: integer
+          minimum: 1
+        requested_at:
+          type: string
+          format: date-time
+        expected_delivery_time:
+          type: integer
+          minimum: 0
+          description: Customer expected delivery time in minutes.
+        transportation_costs:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/TransportationCost"
+        logistics_constraints:
+          type: array
+          items:
+            $ref: "#/components/schemas/LogisticsConstraint"
+    RouteDecision:
+      type: object
+      required: [WarehouseID, EstimatedDeliveryTime, TotalCost, RouteOptimizationScore]
+      properties:
+        WarehouseID:
+          type: string
+        EstimatedDeliveryTime:
+          type: integer
+          description: Minutes
+        TotalCost:
+          type: number
+        RouteOptimizationScore:
+          type: number
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string

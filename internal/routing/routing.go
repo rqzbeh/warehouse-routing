@@ -33,9 +33,11 @@ type TransportationCost struct {
 }
 
 type LogisticsConstraint struct {
-	WarehouseID         string  `json:"warehouse_id"`
-	TrafficCoefficient  float64 `json:"traffic_coefficient"`
-	FleetPriorityFactor float64 `json:"fleet_priority_factor"`
+	WarehouseID         string    `json:"warehouse_id"`
+	TrafficCoefficient  float64   `json:"traffic_coefficient"`
+	FleetPriorityFactor float64   `json:"fleet_priority_factor"`
+	StartTime           time.Time `json:"start_time"`
+	EndTime             time.Time `json:"end_time"`
 }
 
 type Candidate struct {
@@ -68,6 +70,9 @@ func Validate(req Request) error {
 		if c.WarehouseID == "" || c.TrafficCoefficient < 0 || c.FleetPriorityFactor < 0 {
 			return ErrBadRequest
 		}
+		if !c.StartTime.IsZero() && !c.EndTime.IsZero() && !c.StartTime.Before(c.EndTime) {
+			return ErrBadRequest
+		}
 	}
 	return nil
 }
@@ -85,9 +90,16 @@ func Select(req Request, candidates []Candidate) (Decision, error) {
 		costs[c.WarehouseID] = c
 	}
 
+	requestedAt := req.RequestedAt
+	if requestedAt.IsZero() {
+		requestedAt = time.Now()
+	}
+
 	constraints := map[string]LogisticsConstraint{}
 	for _, c := range req.LogisticsConstraints {
-		constraints[c.WarehouseID] = c
+		if constraintApplies(c, requestedAt) {
+			constraints[c.WarehouseID] = c
+		}
 	}
 
 	var best Decision
@@ -131,6 +143,19 @@ func defaultIfZero(v, fallback float64) float64 {
 		return fallback
 	}
 	return v
+}
+
+func constraintApplies(c LogisticsConstraint, at time.Time) bool {
+	if c.StartTime.IsZero() && c.EndTime.IsZero() {
+		return true
+	}
+	if c.StartTime.IsZero() {
+		return at.Before(c.EndTime)
+	}
+	if c.EndTime.IsZero() {
+		return !at.Before(c.StartTime)
+	}
+	return !at.Before(c.StartTime) && at.Before(c.EndTime)
 }
 
 func round2(v float64) float64 {

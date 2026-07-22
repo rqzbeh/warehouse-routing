@@ -3,6 +3,7 @@ package routing
 import (
 	"errors"
 	"testing"
+	"time"
 )
 
 func TestSelectChoosesLowestWeightedCost(t *testing.T) {
@@ -108,6 +109,64 @@ func TestSelectPenalizesLateDelivery(t *testing.T) {
 	}
 	if got.WarehouseID != "expensive-fast" {
 		t.Fatalf("warehouse = %q, want expensive-fast", got.WarehouseID)
+	}
+}
+
+func TestSelectUsesConstraintForRequestedTimeWindow(t *testing.T) {
+	requestedAt := time.Date(2026, 7, 22, 12, 0, 0, 0, time.UTC)
+	req := Request{
+		CustomerLocation: Location{Lat: 35, Lon: 51},
+		SKU:              "SKU-1",
+		Quantity:         1,
+		RequestedAt:      requestedAt,
+		TransportationCosts: []TransportationCost{
+			{WarehouseID: "w1", Cost: 100, ETAMinutes: 10},
+			{WarehouseID: "w2", Cost: 100, ETAMinutes: 10},
+		},
+		LogisticsConstraints: []LogisticsConstraint{
+			{
+				WarehouseID:         "w1",
+				TrafficCoefficient:  10,
+				FleetPriorityFactor: 1,
+				StartTime:           requestedAt.Add(-time.Hour),
+				EndTime:             requestedAt.Add(time.Hour),
+			},
+			{
+				WarehouseID:         "w2",
+				TrafficCoefficient:  10,
+				FleetPriorityFactor: 1,
+				StartTime:           requestedAt.Add(time.Hour),
+				EndTime:             requestedAt.Add(2 * time.Hour),
+			},
+		},
+	}
+
+	got, err := Select(req, []Candidate{
+		{WarehouseID: "w1", Lat: 35, Lon: 51},
+		{WarehouseID: "w2", Lat: 35, Lon: 51},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.WarehouseID != "w2" {
+		t.Fatalf("warehouse = %q, want w2", got.WarehouseID)
+	}
+}
+
+func TestValidateRejectsInvalidConstraintWindow(t *testing.T) {
+	at := time.Date(2026, 7, 22, 12, 0, 0, 0, time.UTC)
+	err := Validate(Request{
+		CustomerLocation: Location{Lat: 35, Lon: 51},
+		SKU:              "SKU-1",
+		Quantity:         1,
+		LogisticsConstraints: []LogisticsConstraint{{
+			WarehouseID: "w1",
+			StartTime:   at,
+			EndTime:     at,
+		}},
+	})
+	if !errors.Is(err, ErrBadRequest) {
+		t.Fatalf("err = %v, want ErrBadRequest", err)
 	}
 }
 

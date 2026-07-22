@@ -8,5 +8,8 @@ INSERT INTO inventory (warehouse_id, sku, available_quantity) VALUES
     ('tehran-west', 'SKU-1', 100),
     ('tehran-east', 'SKU-1', 60),
     ('karaj', 'SKU-1', 80),
-    ('tehran-west', 'SKU-2', 10)
+    ('tehran-west', 'SKU-2', 10),
+    ('tehran-west', 'PERF-SKU', 1000000),
+    ('tehran-east', 'PERF-SKU', 1000000),
+    ('karaj', 'PERF-SKU', 1000000)
 ON CONFLICT (warehouse_id, sku) DO NOTHING;

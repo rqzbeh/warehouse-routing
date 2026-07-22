@@ -29,6 +29,7 @@ curl -s http://localhost:8080/route \
     "customer_location": {"lat": 35.7219, "lon": 51.3347},
     "sku": "SKU-1",
     "quantity": 2,
+    "requested_at": "2026-07-22T12:00:00Z",
     "expected_delivery_time": 60,
     "transportation_costs": [
       {"warehouse_id": "tehran-west", "cost": 100000, "eta_minutes": 45},
@@ -36,9 +37,27 @@ curl -s http://localhost:8080/route \
       {"warehouse_id": "karaj", "cost": 70000, "eta_minutes": 95}
     ],
     "logistics_constraints": [
-      {"warehouse_id": "tehran-west", "traffic_coefficient": 1.2, "fleet_priority_factor": 1.1},
-      {"warehouse_id": "tehran-east", "traffic_coefficient": 1.1, "fleet_priority_factor": 1},
-      {"warehouse_id": "karaj", "traffic_coefficient": 1, "fleet_priority_factor": 0.9}
+      {
+        "warehouse_id": "tehran-west",
+        "traffic_coefficient": 1.2,
+        "fleet_priority_factor": 1.1,
+        "start_time": "2026-07-22T11:00:00Z",
+        "end_time": "2026-07-22T13:00:00Z"
+      },
+      {
+        "warehouse_id": "tehran-east",
+        "traffic_coefficient": 1.1,
+        "fleet_priority_factor": 1,
+        "start_time": "2026-07-22T11:00:00Z",
+        "end_time": "2026-07-22T13:00:00Z"
+      },
+      {
+        "warehouse_id": "karaj",
+        "traffic_coefficient": 1,
+        "fleet_priority_factor": 0.9,
+        "start_time": "2026-07-22T11:00:00Z",
+        "end_time": "2026-07-22T13:00:00Z"
+      }
     ]
   }'
 ```
@@ -63,9 +82,10 @@ curl -s http://localhost:8080/route \
 - `customer_location.lat` و `customer_location.lon`
 - `sku`
 - `quantity`
+- `requested_at` اختیاری، با فرمت RFC3339
 - `expected_delivery_time` اختیاری، به دقیقه
 - `transportation_costs[]`
-- `logistics_constraints[]`
+- `logistics_constraints[]` همراه با بازه زمانی اختیاری `start_time` و `end_time`
 
 خروجی‌ها:
 
@@ -97,10 +117,18 @@ go test ./...
 go vet ./...
 ```
 
+نسخه Go برای CI و Docker روی `1.26.5` تنظیم شده است.
+
 تست پذیرش مطابق PDF روی سرویس اجراشده:
 
 ```bash
 python3 scripts/acceptance_test.py http://localhost:8080
+```
+
+تست بار با k6:
+
+```bash
+BASE_URL=http://localhost:8080 SKU=PERF-SKU k6 run scripts/k6-route.js
 ```
 
 تست یکپارچه لایه دیتابیس:
@@ -117,6 +145,10 @@ TEST_DATABASE_URL='postgres://routing:routing@localhost:5432/routing?sslmode=dis
 - `go vet ./...`
 - اسکن SonarQube در صورت وجود `SONAR_TOKEN`
 - ساخت Docker image بدون انتشار
+
+## قرارداد API
+
+فایل `openapi.yaml` قرارداد endpointها، schema ورودی، schema خروجی و خطاها را ثبت می‌کند.
 
 ## Kubernetes
 
