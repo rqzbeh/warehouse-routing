@@ -1,0 +1,6 @@
+.git
+.github
+*.pdf
+bin
+tmp
+/server
