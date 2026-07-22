@@ -140,6 +140,7 @@ for _ in range(20):
 latencies.sort()
 p95 = latencies[int(len(latencies) * 0.95) - 1]
 assert_true(p95 < 200, f"p95 latency={p95:.2f}ms, want <200ms")
+assert_true(latencies[-1] < 200, f"max latency={latencies[-1]:.2f}ms, want <200ms")
 print(json.dumps({
     "base_url": BASE_URL,
     "decision": decision,
