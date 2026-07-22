@@ -53,7 +53,7 @@
 - تست یکپارچه PostgreSQL
 - تست هم‌زمانی رزرو موجودی
 - تست پذیرش مطابق ورودی و خروجی PDF
-- تست بار k6 با آستانه p95 کمتر از ۲۰۰ میلی‌ثانیه
+- تست بار k6 با آستانه p95 و max کمتر از ۲۰۰ میلی‌ثانیه
 
 اجرای تست‌های اصلی:
 
@@ -71,7 +71,7 @@ python3 scripts/acceptance_test.py http://localhost:8080
 اجرای تست بار:
 
 ```bash
-BASE_URL=http://localhost:8080 SKU=PERF-SKU k6 run scripts/k6-route.js
+BASE_URL=http://localhost:8080 k6 run scripts/k6-route.js
 ```
 
 ## CI/CD

@@ -59,6 +59,6 @@ jobs:
       - run: docker compose up -d --build
       - run: for i in $(seq 1 30); do curl -fsS http://localhost:8080/readyz && exit 0; sleep 1; done; exit 1
       - run: python3 scripts/acceptance_test.py http://localhost:8080
-      - run: docker run --rm --network warehouse-routing_default -v "$PWD/scripts:/scripts:ro" -e BASE_URL=http://api:8080 -e SKU=PERF-SKU grafana/k6 run /scripts/k6-route.js
+      - run: docker run --rm --network warehouse-routing_default -v "$PWD/scripts:/scripts:ro" -e BASE_URL=http://api:8080 grafana/k6 run /scripts/k6-route.js
       - if: always()
         run: docker compose down -v

@@ -158,7 +158,7 @@ python3 scripts/acceptance_test.py http://localhost:8080
 تست بار با k6:
 
 ```bash
-BASE_URL=http://localhost:8080 SKU=PERF-SKU k6 run scripts/k6-route.js
+BASE_URL=http://localhost:8080 k6 run scripts/k6-route.js
 ```
 
 تست یکپارچه لایه دیتابیس:

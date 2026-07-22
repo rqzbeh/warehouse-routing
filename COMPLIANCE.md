@@ -35,7 +35,7 @@
 | Stateless | state در حافظه برنامه نگهداری نمی‌شود؛ موجودی در PostgreSQL است |
 | Scale-out / Kubernetes | مانفیست‌های `k8s/deployment.yaml`، `k8s/service.yaml` و `k8s/hpa.yaml` |
 | Search & Persistence | PostgreSQL با ایندکس `inventory(sku, available_quantity)` |
-| Latency زیر ۲۰۰ms | تست پذیرش روی VPS-local مقدار p95 کمتر از ۲۰۰ms نشان داده است |
+| Latency زیر ۲۰۰ms | تست پذیرش و k6 روی VPS-local مقدار p95 و max کمتر از ۲۰۰ms را enforce می‌کنند |
 | CI/CD | `.github/workflows/ci.yml` شامل test، vet، SonarQube و Docker build |
 | Docker | `Dockerfile` چندمرحله‌ای و `docker-compose.yml` |
 
