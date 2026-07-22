@@ -37,6 +37,40 @@ valid_payload = {
         {"warehouse_id": "tehran-west", "cost": 100000, "eta_minutes": 45},
         {"warehouse_id": "tehran-east", "cost": 85000, "eta_minutes": 70},
         {"warehouse_id": "karaj", "cost": 70000, "eta_minutes": 95},
+    ] + [
+        {"warehouse_id": warehouse_id, "cost": 2000000, "eta_minutes": 1000}
+        for warehouse_id in (
+            "mashhad",
+            "isfahan",
+            "shiraz",
+            "tabriz",
+            "ahvaz",
+            "qom",
+            "kermanshah",
+            "urmia",
+            "rasht",
+            "zahedan",
+            "hamedan",
+            "kerman",
+            "yazd",
+            "ardabil",
+            "bandar-abbas",
+            "arak",
+            "zanjan",
+            "sanandaj",
+            "qazvin",
+            "gorgan",
+            "sari",
+            "khorramabad",
+            "bushehr",
+            "birjand",
+            "bojnurd",
+            "shahrekord",
+            "ilam",
+            "semnan",
+            "yasuj",
+            "kish",
+        )
     ],
     "logistics_constraints": [
         {
@@ -92,6 +126,11 @@ missing_stock["sku"] = "MISSING-SKU"
 status, _, _ = request("/route", missing_stock)
 assert_true(status == 404, f"missing stock status={status}, want 404")
 
+missing_costs = dict(valid_payload)
+missing_costs["transportation_costs"] = []
+status, _, _ = request("/route", missing_costs)
+assert_true(status == 400, f"missing transportation costs status={status}, want 400")
+
 latencies = []
 for _ in range(20):
     status, _, ms = request("/route", valid_payload)
@@ -100,6 +139,7 @@ for _ in range(20):
 
 latencies.sort()
 p95 = latencies[int(len(latencies) * 0.95) - 1]
+assert_true(p95 < 200, f"p95 latency={p95:.2f}ms, want <200ms")
 print(json.dumps({
     "base_url": BASE_URL,
     "decision": decision,

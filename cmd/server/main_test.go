@@ -117,6 +117,18 @@ func TestRouteRejectsUnknownJSONFields(t *testing.T) {
 	}
 }
 
+func TestRouteRejectsTrailingJSON(t *testing.T) {
+	body := `{"sku":"SKU-1","quantity":1,"customer_location":{"lat":35,"lon":51},"transportation_costs":[{"warehouse_id":"w1","cost":100,"eta_minutes":10}]}{}`
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/route", strings.NewReader(body))
+
+	app{store: &fakeStore{}}.route(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("status = %d, want 400", rec.Code)
+	}
+}
+
 func TestRouteReportsNoWarehouse(t *testing.T) {
 	body := `{
 		"customer_location":{"lat":35,"lon":51},
@@ -148,5 +160,17 @@ func TestRouteReportsCandidateLookupFailure(t *testing.T) {
 
 	if rec.Code != http.StatusInternalServerError {
 		t.Fatalf("status = %d, want 500", rec.Code)
+	}
+}
+
+func TestRouteRejectsMissingTransportationCosts(t *testing.T) {
+	body := `{"customer_location":{"lat":35,"lon":51},"sku":"SKU-1","quantity":1}`
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/route", strings.NewReader(body))
+
+	app{store: &fakeStore{}}.route(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("status = %d, want 400", rec.Code)
 	}
 }

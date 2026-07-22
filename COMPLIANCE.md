@@ -14,6 +14,7 @@
 | اولویت ناوگان توزیع سنگین | `logistics_constraints[].fleet_priority_factor` |
 | بازه زمانی محدودیت لجستیکی | `requested_at` در درخواست و `start_time`/`end_time` در هر constraint |
 | بررسی SKU و موجودی | `sku` و `quantity`، سپس query روی جدول `inventory` |
+| ۳۳ هاب انبارداری | seed دیتابیس شامل ۳۳ انبار نمونه است و سرویس به تعداد ثابت وابسته نیست |
 
 ## خروجی‌های API
 

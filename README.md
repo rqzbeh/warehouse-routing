@@ -28,13 +28,43 @@ curl -s http://localhost:8080/route \
   -d '{
     "customer_location": {"lat": 35.7219, "lon": 51.3347},
     "sku": "SKU-1",
-    "quantity": 2,
+    "quantity": 1,
     "requested_at": "2026-07-22T12:00:00Z",
     "expected_delivery_time": 60,
     "transportation_costs": [
       {"warehouse_id": "tehran-west", "cost": 100000, "eta_minutes": 45},
       {"warehouse_id": "tehran-east", "cost": 85000, "eta_minutes": 70},
-      {"warehouse_id": "karaj", "cost": 70000, "eta_minutes": 95}
+      {"warehouse_id": "karaj", "cost": 70000, "eta_minutes": 95},
+      {"warehouse_id": "mashhad", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "isfahan", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "shiraz", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "tabriz", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "ahvaz", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "qom", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "kermanshah", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "urmia", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "rasht", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "zahedan", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "hamedan", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "kerman", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "yazd", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "ardabil", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "bandar-abbas", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "arak", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "zanjan", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "sanandaj", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "qazvin", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "gorgan", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "sari", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "khorramabad", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "bushehr", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "birjand", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "bojnurd", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "shahrekord", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "ilam", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "semnan", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "yasuj", "cost": 2000000, "eta_minutes": 1000},
+      {"warehouse_id": "kish", "cost": 2000000, "eta_minutes": 1000}
     ],
     "logistics_constraints": [
       {
@@ -84,7 +114,7 @@ curl -s http://localhost:8080/route \
 - `quantity`
 - `requested_at` اختیاری، با فرمت RFC3339
 - `expected_delivery_time` اختیاری، به دقیقه
-- `transportation_costs[]`
+- `transportation_costs[]` الزامی
 - `logistics_constraints[]` همراه با بازه زمانی اختیاری `start_time` و `end_time`
 
 خروجی‌ها:

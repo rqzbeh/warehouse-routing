@@ -50,6 +50,96 @@ paths:
                     - warehouse_id: karaj
                       cost: 70000
                       eta_minutes: 95
+                    - warehouse_id: mashhad
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: isfahan
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: shiraz
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: tabriz
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: ahvaz
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: qom
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: kermanshah
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: urmia
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: rasht
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: zahedan
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: hamedan
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: kerman
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: yazd
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: ardabil
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: bandar-abbas
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: arak
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: zanjan
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: sanandaj
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: qazvin
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: gorgan
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: sari
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: khorramabad
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: bushehr
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: birjand
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: bojnurd
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: shahrekord
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: ilam
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: semnan
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: yasuj
+                      cost: 2000000
+                      eta_minutes: 1000
+                    - warehouse_id: kish
+                      cost: 2000000
+                      eta_minutes: 1000
                   logistics_constraints:
                     - warehouse_id: tehran-west
                       traffic_coefficient: 1.2

@@ -57,6 +57,9 @@ func Validate(req Request) error {
 	if req.SKU == "" || req.Quantity <= 0 {
 		return ErrBadRequest
 	}
+	if len(req.TransportationCosts) == 0 {
+		return ErrBadRequest
+	}
 	if req.CustomerLocation.Lat < -90 || req.CustomerLocation.Lat > 90 ||
 		req.CustomerLocation.Lon < -180 || req.CustomerLocation.Lon > 180 {
 		return ErrBadRequest
@@ -102,13 +105,16 @@ func Select(req Request, candidates []Candidate) (Decision, error) {
 		}
 	}
 
+	for _, candidate := range candidates {
+		if _, ok := costs[candidate.WarehouseID]; !ok {
+			return Decision{}, ErrBadRequest
+		}
+	}
+
 	var best Decision
 	bestScore := math.Inf(1)
 	for _, candidate := range candidates {
-		transport, ok := costs[candidate.WarehouseID]
-		if !ok {
-			continue
-		}
+		transport := costs[candidate.WarehouseID]
 
 		constraint := constraints[candidate.WarehouseID]
 		traffic := defaultIfZero(constraint.TrafficCoefficient, 1)

@@ -40,7 +40,7 @@ func TestSelectChoosesLowestWeightedCost(t *testing.T) {
 	}
 }
 
-func TestSelectSkipsCandidatesWithoutTransportCost(t *testing.T) {
+func TestSelectRejectsCandidatesWithoutTransportCost(t *testing.T) {
 	req := Request{
 		CustomerLocation:    Location{Lat: 35, Lon: 51},
 		SKU:                 "SKU-1",
@@ -49,8 +49,8 @@ func TestSelectSkipsCandidatesWithoutTransportCost(t *testing.T) {
 	}
 
 	_, err := Select(req, []Candidate{{WarehouseID: "w1", Lat: 35, Lon: 51}})
-	if !errors.Is(err, ErrNoCandidate) {
-		t.Fatalf("err = %v, want ErrNoCandidate", err)
+	if !errors.Is(err, ErrBadRequest) {
+		t.Fatalf("err = %v, want ErrBadRequest", err)
 	}
 }
 
@@ -85,6 +85,12 @@ func TestSelectMatchesReadmeExample(t *testing.T) {
 	}
 	if got.EstimatedDeliveryMinutes != 50 {
 		t.Fatalf("eta = %d, want 50", got.EstimatedDeliveryMinutes)
+	}
+	if got.TotalCost != 114090.91 {
+		t.Fatalf("total cost = %.2f, want 114090.91", got.TotalCost)
+	}
+	if got.RouteOptimizationScore != 46.71 {
+		t.Fatalf("score = %.2f, want 46.71", got.RouteOptimizationScore)
 	}
 }
 
@@ -159,6 +165,11 @@ func TestValidateRejectsInvalidConstraintWindow(t *testing.T) {
 		CustomerLocation: Location{Lat: 35, Lon: 51},
 		SKU:              "SKU-1",
 		Quantity:         1,
+		TransportationCosts: []TransportationCost{{
+			WarehouseID: "w1",
+			Cost:        1,
+			ETAMinutes:  1,
+		}},
 		LogisticsConstraints: []LogisticsConstraint{{
 			WarehouseID: "w1",
 			StartTime:   at,
@@ -170,8 +181,20 @@ func TestValidateRejectsInvalidConstraintWindow(t *testing.T) {
 	}
 }
 
+func TestValidateRejectsMissingTransportationCosts(t *testing.T) {
+	err := Validate(Request{CustomerLocation: Location{Lat: 35, Lon: 51}, SKU: "SKU-1", Quantity: 1})
+	if !errors.Is(err, ErrBadRequest) {
+		t.Fatalf("err = %v, want ErrBadRequest", err)
+	}
+}
+
 func TestValidateRejectsBadLocation(t *testing.T) {
-	err := Validate(Request{CustomerLocation: Location{Lat: 100, Lon: 51}, SKU: "SKU-1", Quantity: 1})
+	err := Validate(Request{
+		CustomerLocation:    Location{Lat: 100, Lon: 51},
+		SKU:                 "SKU-1",
+		Quantity:            1,
+		TransportationCosts: []TransportationCost{{WarehouseID: "w1", Cost: 1, ETAMinutes: 1}},
+	})
 	if !errors.Is(err, ErrBadRequest) {
 		t.Fatalf("err = %v, want ErrBadRequest", err)
 	}

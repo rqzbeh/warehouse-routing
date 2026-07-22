@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -81,12 +82,16 @@ func (a app) route(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "invalid_json")
 		return
 	}
+	if err := dec.Decode(&struct{}{}); err != io.EOF {
+		writeError(w, http.StatusBadRequest, "invalid_json")
+		return
+	}
 	if err := routing.Validate(req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid_request")
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(r.Context(), 150*time.Millisecond)
+	ctx, cancel := context.WithTimeout(r.Context(), 500*time.Millisecond)
 	defer cancel()
 
 	candidates, err := a.store.Candidates(ctx, req.SKU, req.Quantity)

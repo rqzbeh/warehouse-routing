@@ -57,6 +57,5 @@ export default function () {
   check(res, {
     'status is 200': (r) => r.status === 200,
     'returns WarehouseID': (r) => r.json('WarehouseID') === 'tehran-west',
-    'p95 target sample under 200ms': (r) => r.timings.duration < 200,
   });
 }

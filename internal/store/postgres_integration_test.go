@@ -22,7 +22,7 @@ func TestPostgresCandidatesAndReserve(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	t.Cleanup(db.Close)
 
 	_, err = db.db.Exec(ctx, `
 		INSERT INTO warehouses (id, name, lat, lon)
@@ -75,7 +75,7 @@ func TestPostgresConcurrentReserveAllowsOnlyAvailableStock(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	t.Cleanup(db.Close)
 
 	_, err = db.db.Exec(ctx, `
 		INSERT INTO warehouses (id, name, lat, lon)
