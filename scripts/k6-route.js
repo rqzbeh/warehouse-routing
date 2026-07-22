@@ -13,9 +13,46 @@ export const options = {
 
 const baseURL = __ENV.BASE_URL || 'http://localhost:8080';
 
+const distantCosts = [
+  'mashhad',
+  'isfahan',
+  'shiraz',
+  'tabriz',
+  'ahvaz',
+  'qom',
+  'kermanshah',
+  'urmia',
+  'rasht',
+  'zahedan',
+  'hamedan',
+  'kerman',
+  'yazd',
+  'ardabil',
+  'bandar-abbas',
+  'arak',
+  'zanjan',
+  'sanandaj',
+  'qazvin',
+  'gorgan',
+  'sari',
+  'khorramabad',
+  'bushehr',
+  'birjand',
+  'bojnurd',
+  'shahrekord',
+  'ilam',
+  'semnan',
+  'yasuj',
+  'kish',
+].map((warehouseId) => ({
+  warehouse_id: warehouseId,
+  cost: 2000000,
+  eta_minutes: 1000,
+}));
+
 const payload = JSON.stringify({
   customer_location: { lat: 35.7219, lon: 51.3347 },
-  sku: __ENV.SKU || 'PERF-SKU',
+  sku: __ENV.SKU || 'SKU-1',
   quantity: 1,
   requested_at: '2026-07-22T12:00:00Z',
   expected_delivery_time: 60,
@@ -23,7 +60,7 @@ const payload = JSON.stringify({
     { warehouse_id: 'tehran-west', cost: 100000, eta_minutes: 45 },
     { warehouse_id: 'tehran-east', cost: 85000, eta_minutes: 70 },
     { warehouse_id: 'karaj', cost: 70000, eta_minutes: 95 },
-  ],
+  ].concat(distantCosts),
   logistics_constraints: [
     {
       warehouse_id: 'tehran-west',
